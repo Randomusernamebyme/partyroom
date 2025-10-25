@@ -56,6 +56,8 @@ export default function ItemShop() {
       attraction: selectedItem.attraction,
       price: selectedItem.price,
       roomId: selectedRoom,
+      status: 'installed' as const,
+      installTime: selectedItem.installTime,
     };
 
     addItem(newItem);
