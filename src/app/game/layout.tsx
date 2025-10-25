@@ -1,7 +1,6 @@
 'use client';
 
 import { useAuth } from '@/hooks/useAuth';
-import { useGameData } from '@/hooks/useGameData';
 import { useGameStore } from '@/store/gameStore';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
@@ -38,7 +37,6 @@ export default function GameLayout({
     return '空閒';
   };
   const { user, loading: authLoading, logout } = useAuth();
-  const { saveGame } = useGameData(user?.uid || null);
   const { currentDay, money, reputation, schedule } = useGameStore();
   const router = useRouter();
 

@@ -6,27 +6,11 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { Package, Star, Home, Move } from 'lucide-react';
+import { getItemTypeIcon, getItemTypeLabel } from '@/lib/utils';
 
 export default function MyItems() {
   const { rooms, items, inventory } = useGameStore();
 
-  const getItemTypeIcon = (type: string) => {
-    const typeMap: { [key: string]: string } = {
-      game: '🎮',
-      entertainment: '🎤',
-      decoration: '🎨',
-    };
-    return typeMap[type] || '📦';
-  };
-
-  const getItemTypeLabel = (type: string) => {
-    const typeMap: { [key: string]: string } = {
-      game: '遊戲設備',
-      entertainment: '娛樂設備',
-      decoration: '裝飾物品',
-    };
-    return typeMap[type] || type;
-  };
 
   const getRoomName = (roomId: string) => {
     const room = rooms.find(r => r.id === roomId);

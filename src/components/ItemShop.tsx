@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ShoppingCart, Star, DollarSign, Package } from 'lucide-react';
+import { getItemTypeIcon, getItemTypeLabel } from '@/lib/utils';
 
 export default function ItemShop() {
   const { money, spendMoney, addToInventory } = useGameStore();
@@ -40,23 +41,6 @@ export default function ItemShop() {
     alert(`已購買 ${item.name}，請前往庫存安排安裝！`);
   };
 
-  const getItemTypeIcon = (type: string) => {
-    const typeMap: { [key: string]: string } = {
-      game: '🎮',
-      entertainment: '🎤',
-      decoration: '🎨',
-    };
-    return typeMap[type] || '📦';
-  };
-
-  const getItemTypeLabel = (type: string) => {
-    const typeMap: { [key: string]: string } = {
-      game: '遊戲設備',
-      entertainment: '娛樂設備',
-      decoration: '裝飾物品',
-    };
-    return typeMap[type] || type;
-  };
 
   return (
     <div className="space-y-6">

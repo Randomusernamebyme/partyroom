@@ -9,6 +9,7 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, Di
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Package, Clock, Wrench, Star } from 'lucide-react';
 import { TIME_SLOTS } from '@/lib/constants';
+import { getItemTypeIcon, getItemTypeLabel } from '@/lib/utils';
 
 export default function Inventory() {
   const { inventory, rooms, schedule, addToSchedule } = useGameStore();
@@ -17,23 +18,6 @@ export default function Inventory() {
   const [selectedTime, setSelectedTime] = useState<string>('');
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
-  const getItemTypeIcon = (type: string) => {
-    const typeMap: { [key: string]: string } = {
-      game: '🎮',
-      entertainment: '🎤',
-      decoration: '🎨',
-    };
-    return typeMap[type] || '📦';
-  };
-
-  const getItemTypeLabel = (type: string) => {
-    const typeMap: { [key: string]: string } = {
-      game: '遊戲設備',
-      entertainment: '娛樂設備',
-      decoration: '裝飾物品',
-    };
-    return typeMap[type] || type;
-  };
 
   const getAvailableTimes = () => {
     const todaySchedule = schedule.slots || [];
