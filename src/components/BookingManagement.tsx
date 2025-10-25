@@ -261,13 +261,13 @@ export default function BookingManagement() {
         <Card>
           <CardContent className="flex flex-col items-center justify-center py-12">
             <Users className="h-12 w-12 text-gray-400 mb-4" />
-            <h3 className="text-lg font-medium text-gray-900 mb-2">還沒有預約</h3>
+            <h3 className="text-lg font-medium text-gray-900 mb-2">還沒有客戶查詢</h3>
             <p className="text-gray-500 text-center mb-4">
-              點擊「生成今日預約」來獲取客戶預約
+              客戶查詢會根據你的聲譽和吸引力自動生成
             </p>
-            <Button onClick={handleGenerateBookings}>
-              生成今日預約
-            </Button>
+            <div className="text-sm text-gray-400">
+              提升聲譽和房間吸引力來獲得更多查詢
+            </div>
           </CardContent>
         </Card>
       )}
