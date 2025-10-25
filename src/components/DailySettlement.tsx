@@ -38,15 +38,18 @@ export default function DailySettlement() {
   const confirmedBookings = bookings.filter(b => b.status === 'confirmed' && b.date === `Day ${currentDay}`);
   const completedBookings = bookings.filter(b => b.status === 'completed' && b.date === `Day ${currentDay}`);
   
+  const currentState = useGameStore.getState();
   const todayStats = calculateDailySettlement({
     currentDay,
     money,
     reputation,
     rooms,
-    items: useGameStore.getState().items,
+    items: currentState.items,
     bookings,
     dailyStats,
-    userId: useGameStore.getState().userId,
+    userId: currentState.userId,
+    inventory: currentState.inventory,
+    schedule: currentState.schedule,
   });
 
   const handleEndDay = async () => {
