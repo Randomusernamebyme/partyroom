@@ -4,7 +4,10 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useGameStore } from '@/store/gameStore';
-import { Home, ShoppingCart, Users, Calendar } from 'lucide-react';
+import RoomManagement from '@/components/RoomManagement';
+import ItemShop from '@/components/ItemShop';
+import MyItems from '@/components/MyItems';
+import { Home, ShoppingCart, Users, Calendar, Package } from 'lucide-react';
 
 export default function GamePage() {
   const { rooms, items, bookings } = useGameStore();
@@ -17,9 +20,10 @@ export default function GamePage() {
       </div>
 
       <Tabs defaultValue="overview" className="w-full">
-        <TabsList className="grid w-full grid-cols-4">
+        <TabsList className="grid w-full grid-cols-5">
           <TabsTrigger value="overview">總覽</TabsTrigger>
           <TabsTrigger value="rooms">房間</TabsTrigger>
+          <TabsTrigger value="shop">商店</TabsTrigger>
           <TabsTrigger value="items">物品</TabsTrigger>
           <TabsTrigger value="bookings">預約</TabsTrigger>
         </TabsList>
@@ -42,7 +46,7 @@ export default function GamePage() {
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium">物品數量</CardTitle>
-                <ShoppingCart className="h-4 w-4 text-muted-foreground" />
+                <Package className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold">{items.length}</div>
@@ -105,27 +109,15 @@ export default function GamePage() {
         </TabsContent>
 
         <TabsContent value="rooms" className="space-y-4">
-          <Card>
-            <CardHeader>
-              <CardTitle>房間管理</CardTitle>
-              <CardDescription>管理你的房間和物品配置</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <p className="text-gray-600">房間管理功能開發中...</p>
-            </CardContent>
-          </Card>
+          <RoomManagement />
+        </TabsContent>
+
+        <TabsContent value="shop" className="space-y-4">
+          <ItemShop />
         </TabsContent>
 
         <TabsContent value="items" className="space-y-4">
-          <Card>
-            <CardHeader>
-              <CardTitle>物品管理</CardTitle>
-              <CardDescription>查看和管理你的物品</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <p className="text-gray-600">物品管理功能開發中...</p>
-            </CardContent>
-          </Card>
+          <MyItems />
         </TabsContent>
 
         <TabsContent value="bookings" className="space-y-4">
