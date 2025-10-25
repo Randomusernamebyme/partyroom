@@ -59,19 +59,22 @@ export default function DailySettlement() {
       });
       
       // 2. 計算當日統計
+      const currentState = useGameStore.getState();
       const stats = calculateDailySettlement({
         currentDay,
         money,
         reputation,
         rooms,
-        items: useGameStore.getState().items,
+        items: currentState.items,
         bookings: bookings.map(b => 
           b.status === 'confirmed' && b.date === `Day ${currentDay}` 
             ? { ...b, status: 'completed' as const }
             : b
         ),
         dailyStats,
-        userId: useGameStore.getState().userId,
+        userId: currentState.userId,
+        inventory: currentState.inventory,
+        schedule: currentState.schedule,
       });
       
       // 3. 更新遊戲狀態

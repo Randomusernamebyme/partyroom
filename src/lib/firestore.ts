@@ -27,10 +27,16 @@ export async function initializeNewGame(userId: string): Promise<GameState> {
       maxItems: 8,
       rent: 500,
       items: [],
+      cleanliness: 100,
     }],
     items: [],
     bookings: [],
     dailyStats: [],
+    inventory: [],
+    schedule: {
+      day: 1,
+      slots: []
+    },
   };
   await saveGameState(userId, initialState);
   return initialState;
