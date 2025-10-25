@@ -40,6 +40,7 @@ export default function RoomManagement() {
       maxItems: sizeConfig.maxItems,
       rent: sizeConfig.rent,
       items: [],
+      cleanliness: 100,
     };
 
     addRoom(newRoom);
