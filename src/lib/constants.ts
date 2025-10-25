@@ -6,13 +6,13 @@ export const ROOM_CONFIG = {
 };
 
 export const INITIAL_ITEMS = [
-  { id: 'ps5', name: 'PlayStation 5', type: 'game', attraction: 80, price: 5000 },
-  { id: 'switch', name: 'Nintendo Switch', type: 'game', attraction: 70, price: 3000 },
-  { id: 'boardgame1', name: '狼人殺', type: 'game', attraction: 40, price: 300 },
-  { id: 'ktv-basic', name: '基礎 KTV', type: 'entertainment', attraction: 60, price: 2000 },
-  { id: 'ktv-pro', name: '專業 KTV', type: 'entertainment', attraction: 90, price: 5000 },
-  { id: 'led-lights', name: 'LED 燈帶', type: 'decoration', attraction: 30, price: 500 },
-  { id: 'birthday-deco', name: '生日裝飾', type: 'decoration', attraction: 40, price: 800 },
+  { id: 'ps5', name: 'PlayStation 5', type: 'game', attraction: 80, price: 5000, installTime: 2 },
+  { id: 'switch', name: 'Nintendo Switch', type: 'game', attraction: 70, price: 3000, installTime: 1 },
+  { id: 'boardgame1', name: '狼人殺', type: 'game', attraction: 40, price: 300, installTime: 0.5 },
+  { id: 'ktv-basic', name: '基礎 KTV', type: 'entertainment', attraction: 60, price: 2000, installTime: 3 },
+  { id: 'ktv-pro', name: '專業 KTV', type: 'entertainment', attraction: 90, price: 5000, installTime: 4 },
+  { id: 'led-lights', name: 'LED 燈帶', type: 'decoration', attraction: 30, price: 500, installTime: 1 },
+  { id: 'birthday-deco', name: '生日裝飾', type: 'decoration', attraction: 40, price: 800, installTime: 0.5 },
 ];
 
 export const CUSTOMER_REQUIREMENTS = {
@@ -24,8 +24,15 @@ export const CUSTOMER_REQUIREMENTS = {
 };
 
 export const TIME_SLOTS = [
-  '09:00-13:00',
-  '13:30-17:30',
-  '18:00-22:00',
-  '22:30-02:30',
+  '09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00',
+  '17:00', '18:00', '19:00', '20:00', '21:00', '22:00', '23:00', '00:00'
 ];
+
+export const SCHEDULE_ACTIVITIES = {
+  CLEANING: 'cleaning',
+  INSTALL_ITEM: 'install_item',
+  BOOKING: 'booking',
+  FREE: 'free'
+} as const;
+
+export type ScheduleActivity = typeof SCHEDULE_ACTIVITIES[keyof typeof SCHEDULE_ACTIVITIES];

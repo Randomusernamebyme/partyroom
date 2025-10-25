@@ -12,7 +12,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ShoppingCart, Star, DollarSign, Package } from 'lucide-react';
 
 export default function ItemShop() {
-  const { rooms, money, items, addItem, assignItemToRoom, spendMoney } = useGameStore();
+  const { rooms, money, items, addItem, assignItemToRoom, spendMoney, addToInventory } = useGameStore();
   const [selectedItem, setSelectedItem] = useState<any>(null);
   const [selectedRoom, setSelectedRoom] = useState<string>('');
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -29,8 +29,21 @@ export default function ItemShop() {
       return;
     }
     
-    setSelectedItem(item);
-    setIsDialogOpen(true);
+    // 直接添加到庫存，不選擇房間
+    const inventoryItem = {
+      id: `${item.id}-${Date.now()}`,
+      name: item.name,
+      type: item.type,
+      attraction: item.attraction,
+      price: item.price,
+      installTime: item.installTime,
+      purchaseDate: new Date().toISOString(),
+    };
+
+    addToInventory(inventoryItem);
+    spendMoney(item.price);
+    
+    alert(`已購買 ${item.name}，請前往庫存安排安裝！`);
   };
 
   const handlePlaceItem = () => {
