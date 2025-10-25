@@ -4,6 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useGameStore } from '@/store/gameStore';
+import { TIME_SLOTS } from '@/lib/constants';
 import RoomManagement from '@/components/RoomManagement';
 import ItemShop from '@/components/ItemShop';
 import MyItems from '@/components/MyItems';
@@ -14,7 +15,7 @@ import Schedule from '@/components/Schedule';
 import { Home, ShoppingCart, Users, Calendar, Package, Calculator, Archive, Clock } from 'lucide-react';
 
 export default function GamePage() {
-  const { rooms, items, bookings } = useGameStore();
+  const { rooms, items, bookings, currentDay, schedule } = useGameStore();
 
   return (
     <div className="space-y-6">
@@ -79,40 +80,44 @@ export default function GamePage() {
             </Card>
           </div>
 
-          <Card>
-            <CardHeader>
-              <CardTitle>快速操作</CardTitle>
-              <CardDescription>常用功能快速入口</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-2">
-              <div className="grid grid-cols-2 gap-2">
-                <Button variant="outline" className="h-20">
-                  <div className="text-center">
-                    <Home className="h-6 w-6 mx-auto mb-2" />
-                    <div className="text-sm font-medium">房間管理</div>
+              <Card>
+                <CardHeader>
+                  <CardTitle>今日時間表</CardTitle>
+                  <CardDescription>Day {currentDay} 的時間安排</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-4 md:grid-cols-8 gap-2">
+                    {TIME_SLOTS.map((time) => {
+                      const slot = schedule.slots?.find(s => s.time === time);
+                      return (
+                        <div key={time} className="text-center">
+                          <div className="text-xs font-medium text-gray-600 mb-1">
+                            {time}
+                          </div>
+                          {slot ? (
+                            <div className={`p-2 rounded text-xs ${
+                              slot.activity === 'cleaning' ? 'bg-blue-100 text-blue-800' :
+                              slot.activity === 'install_item' ? 'bg-green-100 text-green-800' :
+                              slot.activity === 'booking' ? 'bg-purple-100 text-purple-800' :
+                              'bg-gray-100 text-gray-800'
+                            }`}>
+                              <div className="text-center">
+                                {slot.activity === 'cleaning' ? '清潔' :
+                                 slot.activity === 'install_item' ? '安裝' :
+                                 slot.activity === 'booking' ? '預約' : '空閒'}
+                              </div>
+                            </div>
+                          ) : (
+                            <div className="p-2 border-2 border-dashed border-gray-300 rounded text-xs text-gray-400">
+                              空閒
+                            </div>
+                          )}
+                        </div>
+                      );
+                    })}
                   </div>
-                </Button>
-                <Button variant="outline" className="h-20">
-                  <div className="text-center">
-                    <ShoppingCart className="h-6 w-6 mx-auto mb-2" />
-                    <div className="text-sm font-medium">物品商店</div>
-                  </div>
-                </Button>
-                <Button variant="outline" className="h-20">
-                  <div className="text-center">
-                    <Users className="h-6 w-6 mx-auto mb-2" />
-                    <div className="text-sm font-medium">預約處理</div>
-                  </div>
-                </Button>
-                <Button variant="outline" className="h-20">
-                  <div className="text-center">
-                    <Calendar className="h-6 w-6 mx-auto mb-2" />
-                    <div className="text-sm font-medium">每日結算</div>
-                  </div>
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
+                </CardContent>
+              </Card>
         </TabsContent>
 
         <TabsContent value="rooms" className="space-y-4">

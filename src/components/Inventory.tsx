@@ -44,6 +44,16 @@ export default function Inventory() {
   const handleScheduleInstallation = () => {
     if (!selectedItem || !selectedRoom || !selectedTime) return;
 
+    // 檢查物品是否已經安排過安裝
+    const existingInstallation = schedule.slots?.find(slot => 
+      slot.activity === 'install_item' && slot.itemId === selectedItem.id
+    );
+    
+    if (existingInstallation) {
+      alert('此物品已經安排過安裝！');
+      return;
+    }
+
     // 檢查房間容量
     const room = rooms.find(r => r.id === selectedRoom);
     if (!room || room.items.length >= room.maxItems) {

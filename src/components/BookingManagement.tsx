@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { useGameStore } from '@/store/gameStore';
 import { generateDailyBookings } from '@/lib/bookingGenerator';
 import { calculateSatisfaction, calculateRevenue } from '@/lib/satisfactionCalculator';
@@ -14,13 +14,19 @@ import { Separator } from '@/components/ui/separator';
 import { Users, Clock, Star, CheckCircle, AlertCircle } from 'lucide-react';
 
 export default function BookingManagement() {
-  const { rooms, items, bookings, currentDay, reputation, addBooking, updateBooking } = useGameStore();
+  const { rooms, items, bookings, currentDay, reputation, addBooking, updateBooking, inventory } = useGameStore();
   const [selectedBooking, setSelectedBooking] = useState<any>(null);
   const [selectedRoom, setSelectedRoom] = useState<string>('');
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   const pendingBookings = bookings.filter(b => b.status === 'pending');
   const confirmedBookings = bookings.filter(b => b.status === 'confirmed');
+
+  // 計算總吸引力
+  const totalAttraction = rooms.reduce((sum, room) => {
+    const roomItems = items.filter(item => item.roomId === room.id);
+    return sum + roomItems.reduce((roomSum, item) => roomSum + item.attraction, 0);
+  }, 0);
 
   const getCustomerTypeLabel = (type: string) => {
     const typeMap: { [key: string]: string } = {
@@ -81,10 +87,25 @@ export default function BookingManagement() {
     setSelectedRoom('');
   };
 
-  const handleGenerateBookings = () => {
-    const newBookings = generateDailyBookings(currentDay, reputation);
-    newBookings.forEach(booking => addBooking(booking));
+  // 根據聲譽和吸引力生成客戶查詢
+  const generateCustomerQueries = () => {
+    const baseQueries = 1; // 最少1個查詢
+    const reputationBonus = Math.floor(reputation / 20); // 聲譽加成
+    const attractionBonus = Math.floor(totalAttraction / 100); // 吸引力加成
+    const queryCount = Math.min(baseQueries + reputationBonus + attractionBonus, 5);
+    
+    const newBookings = generateDailyBookings(currentDay, reputation, totalAttraction);
+    newBookings.slice(0, queryCount).forEach(booking => addBooking(booking));
   };
+
+  // 每天早上自動生成查詢
+  React.useEffect(() => {
+    // 檢查今天是否已經生成過查詢
+    const todayBookings = bookings.filter(b => b.date === `Day ${currentDay}`);
+    if (todayBookings.length === 0) {
+      generateCustomerQueries();
+    }
+  }, [currentDay]);
 
   const getRoomRecommendation = (booking: any) => {
     const suitableRooms = rooms.filter(room => 
@@ -104,14 +125,12 @@ export default function BookingManagement() {
 
   return (
     <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <div>
-          <h2 className="text-2xl font-bold text-gray-900">預約處理</h2>
-          <p className="text-gray-600">處理客戶預約和安排房間</p>
+      <div>
+        <h2 className="text-2xl font-bold text-gray-900">客戶查詢</h2>
+        <p className="text-gray-600">處理客戶查詢和安排房間</p>
+        <div className="mt-2 text-sm text-gray-500">
+          根據你的聲譽 ({reputation}) 和總吸引力 ({totalAttraction})，今天有 {pendingBookings.length} 個客戶查詢
         </div>
-        <Button onClick={handleGenerateBookings}>
-          生成今日預約
-        </Button>
       </div>
 
       {/* 待處理預約 */}

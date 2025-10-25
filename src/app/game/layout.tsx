@@ -16,9 +16,30 @@ export default function GameLayout({
 }: {
   children: React.ReactNode;
 }) {
+  const getCurrentTimeSlot = () => {
+    const now = new Date();
+    const hour = now.getHours();
+    const timeSlots = ['09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00', '23:00', '00:00'];
+    const currentSlot = timeSlots.find(slot => {
+      const slotHour = parseInt(slot.split(':')[0]);
+      return slotHour === hour;
+    });
+    return currentSlot || '09:00';
+  };
+
+  const getCurrentActivity = () => {
+    const currentTime = getCurrentTimeSlot();
+    const slot = schedule.slots?.find(s => s.time === currentTime);
+    if (slot) {
+      return slot.activity === 'cleaning' ? '清潔' :
+             slot.activity === 'install_item' ? '安裝' :
+             slot.activity === 'booking' ? '預約' : '空閒';
+    }
+    return '空閒';
+  };
   const { user, loading: authLoading, logout } = useAuth();
   const { saveGame } = useGameData(user?.uid || null);
-  const { currentDay, money, reputation } = useGameStore();
+  const { currentDay, money, reputation, schedule } = useGameStore();
   const router = useRouter();
 
   useEffect(() => {
@@ -83,6 +104,18 @@ export default function GameLayout({
                   <span className="text-sm font-medium">天數</span>
                 </div>
                 <p className="text-lg font-bold text-blue-600">Day {currentDay}</p>
+              </CardContent>
+            </Card>
+            
+            <Card>
+              <CardContent className="p-3">
+                <div className="flex items-center space-x-2">
+                  <Clock className="h-4 w-4 text-gray-600" />
+                  <span className="text-sm font-medium">當前時間</span>
+                </div>
+                <p className="text-sm font-bold text-gray-800">
+                  {getCurrentTimeSlot()} - {getCurrentActivity()}
+                </p>
               </CardContent>
             </Card>
           </div>

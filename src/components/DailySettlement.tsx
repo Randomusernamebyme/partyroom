@@ -27,10 +27,16 @@ export default function DailySettlement() {
     rooms, 
     bookings, 
     dailyStats,
+    inventory,
+    schedule,
     updateBooking,
     endDay,
     setGameState,
-    addBooking
+    addBooking,
+    addItem,
+    assignItemToRoom,
+    removeFromInventory,
+    updateRoomCleanliness
   } = useGameStore();
   
   const [isSettling, setIsSettling] = useState(false);
@@ -56,12 +62,43 @@ export default function DailySettlement() {
     setIsSettling(true);
     
     try {
-      // 1. 將所有已確認的預約標記為完成
+      // 1. 執行所有安排的工作
+      const todaySchedule = schedule.slots || [];
+      
+      for (const slot of todaySchedule) {
+        if (slot.activity === 'install_item' && slot.roomId && slot.itemId) {
+          // 執行物品安裝
+          const item = inventory.find(i => i.id === slot.itemId);
+          const room = rooms.find(r => r.id === slot.roomId);
+          
+          if (item && room && room.items.length < room.maxItems) {
+            // 創建已安裝的物品
+            const installedItem = {
+              ...item,
+              id: `${item.id}-installed-${Date.now()}`,
+              roomId: slot.roomId,
+              status: 'installed' as const,
+            };
+            
+            // 添加到房間
+            addItem(installedItem);
+            assignItemToRoom(installedItem.id, slot.roomId);
+            
+            // 從庫存移除
+            removeFromInventory(item.id);
+          }
+        } else if (slot.activity === 'cleaning' && slot.roomId) {
+          // 執行清潔
+          updateRoomCleanliness(slot.roomId, 100);
+        }
+      }
+      
+      // 2. 將所有已確認的預約標記為完成
       confirmedBookings.forEach(booking => {
         updateBooking(booking.id, { status: 'completed' });
       });
       
-      // 2. 計算當日統計
+      // 3. 計算當日統計
       const currentState = useGameStore.getState();
       const stats = calculateDailySettlement({
         currentDay,
@@ -80,7 +117,7 @@ export default function DailySettlement() {
         schedule: currentState.schedule,
       });
       
-      // 3. 更新遊戲狀態
+      // 4. 更新遊戲狀態
       const newMoney = money + stats.profit;
       const newReputation = Math.max(0, Math.min(100, reputation + (stats.avgSatisfaction - 50) / 10));
       
@@ -90,10 +127,10 @@ export default function DailySettlement() {
         dailyStats: [...dailyStats, stats],
       });
       
-      // 4. 進入下一天
+      // 5. 進入下一天
       endDay();
       
-      // 5. 生成新一天的預約
+      // 6. 生成新一天的預約
       const newBookings = generateDailyBookings(currentDay + 1, newReputation);
       newBookings.forEach(booking => addBooking(booking));
       

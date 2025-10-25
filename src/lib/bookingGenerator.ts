@@ -1,7 +1,7 @@
 import { Booking, CustomerType } from './types';
 import { CUSTOMER_REQUIREMENTS, TIME_SLOTS } from './constants';
 
-export function generateDailyBookings(day: number, reputation: number): Booking[] {
+export function generateDailyBookings(day: number, reputation: number, totalAttraction: number = 0): Booking[] {
   const bookingCount = Math.min(3 + Math.floor(reputation / 20), 8);
   const bookings: Booking[] = [];
   
