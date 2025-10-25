@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useGameStore } from '@/store/gameStore';
 import { generateDailyBookings } from '@/lib/bookingGenerator';
 import { calculateSatisfaction, calculateRevenue } from '@/lib/satisfactionCalculator';
+import { TIME_SLOTS } from '@/lib/constants';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';

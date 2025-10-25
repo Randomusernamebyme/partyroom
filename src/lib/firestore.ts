@@ -1,4 +1,4 @@
-import { doc, getDoc, setDoc, updateDoc, collection } from 'firebase/firestore';
+import { doc, getDoc, setDoc } from 'firebase/firestore';
 import { db } from './firebase';
 import { GameState } from './types';
 

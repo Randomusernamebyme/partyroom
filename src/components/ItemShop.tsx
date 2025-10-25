@@ -1,21 +1,15 @@
 'use client';
 
-import { useState } from 'react';
 import { useGameStore } from '@/store/gameStore';
 import { INITIAL_ITEMS } from '@/lib/constants';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ShoppingCart, Star, DollarSign, Package } from 'lucide-react';
 
 export default function ItemShop() {
-  const { rooms, money, items, addItem, assignItemToRoom, spendMoney, addToInventory } = useGameStore();
-  const [selectedItem, setSelectedItem] = useState<any>(null);
-  const [selectedRoom, setSelectedRoom] = useState<string>('');
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const { rooms, money, spendMoney, addToInventory } = useGameStore();
 
   const itemTypes = [
     { value: 'game', label: '遊戲設備', icon: '🎮' },
@@ -46,31 +40,7 @@ export default function ItemShop() {
     alert(`已購買 ${item.name}，請前往庫存安排安裝！`);
   };
 
-  const handlePlaceItem = () => {
-    if (!selectedItem || !selectedRoom) return;
 
-    const newItem = {
-      id: `${selectedItem.id}-${Date.now()}`,
-      name: selectedItem.name,
-      type: selectedItem.type,
-      attraction: selectedItem.attraction,
-      price: selectedItem.price,
-      roomId: selectedRoom,
-      status: 'installed' as const,
-      installTime: selectedItem.installTime,
-    };
-
-    addItem(newItem);
-    assignItemToRoom(newItem.id, selectedRoom);
-    spendMoney(selectedItem.price);
-    setIsDialogOpen(false);
-    setSelectedItem(null);
-    setSelectedRoom('');
-  };
-
-  const getAvailableRooms = () => {
-    return rooms.filter(room => room.items.length < room.maxItems);
-  };
 
   const getItemTypeIcon = (type: string) => {
     const typeMap: { [key: string]: string } = {

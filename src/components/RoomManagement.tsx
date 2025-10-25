@@ -92,7 +92,7 @@ export default function RoomManagement() {
                         <div className="flex justify-between items-center w-full">
                           <span>{size.label}</span>
                           <span className="text-sm text-gray-500 ml-4">
-                            容量: {size.capacity}人 | 租金: ${size.rent}/天
+                            容量: {size.capacity}人 | 租金: ${size.rent}/天 | 清潔度: 100%
                           </span>
                         </div>
                       </SelectItem>
