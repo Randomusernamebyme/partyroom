@@ -10,6 +10,8 @@ interface GameStore extends GameState {
   updateBooking: (bookingId: string, updates: Partial<Booking>) => void;
   endDay: () => void;
   spendMoney: (amount: number) => void;
+  earnMoney: (amount: number) => void;
+  updateReputation: (amount: number) => void;
 }
 
 export const useGameStore = create<GameStore>((set) => ({
@@ -39,4 +41,8 @@ export const useGameStore = create<GameStore>((set) => ({
   })),
   endDay: () => set((state) => ({ currentDay: state.currentDay + 1 })),
   spendMoney: (amount) => set((state) => ({ money: state.money - amount })),
+  earnMoney: (amount) => set((state) => ({ money: state.money + amount })),
+  updateReputation: (amount) => set((state) => ({ 
+    reputation: Math.max(0, Math.min(100, state.reputation + amount)) 
+  })),
 }));

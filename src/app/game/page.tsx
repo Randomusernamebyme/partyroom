@@ -7,7 +7,9 @@ import { useGameStore } from '@/store/gameStore';
 import RoomManagement from '@/components/RoomManagement';
 import ItemShop from '@/components/ItemShop';
 import MyItems from '@/components/MyItems';
-import { Home, ShoppingCart, Users, Calendar, Package } from 'lucide-react';
+import BookingManagement from '@/components/BookingManagement';
+import DailySettlement from '@/components/DailySettlement';
+import { Home, ShoppingCart, Users, Calendar, Package, Calculator } from 'lucide-react';
 
 export default function GamePage() {
   const { rooms, items, bookings } = useGameStore();
@@ -20,12 +22,13 @@ export default function GamePage() {
       </div>
 
       <Tabs defaultValue="overview" className="w-full">
-        <TabsList className="grid w-full grid-cols-5">
+        <TabsList className="grid w-full grid-cols-6">
           <TabsTrigger value="overview">總覽</TabsTrigger>
           <TabsTrigger value="rooms">房間</TabsTrigger>
           <TabsTrigger value="shop">商店</TabsTrigger>
           <TabsTrigger value="items">物品</TabsTrigger>
           <TabsTrigger value="bookings">預約</TabsTrigger>
+          <TabsTrigger value="settlement">結算</TabsTrigger>
         </TabsList>
 
         <TabsContent value="overview" className="space-y-4">
@@ -121,15 +124,11 @@ export default function GamePage() {
         </TabsContent>
 
         <TabsContent value="bookings" className="space-y-4">
-          <Card>
-            <CardHeader>
-              <CardTitle>預約處理</CardTitle>
-              <CardDescription>處理客戶預約和安排房間</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <p className="text-gray-600">預約處理功能開發中...</p>
-            </CardContent>
-          </Card>
+          <BookingManagement />
+        </TabsContent>
+
+        <TabsContent value="settlement" className="space-y-4">
+          <DailySettlement />
         </TabsContent>
       </Tabs>
     </div>

@@ -1,0 +1,28 @@
+import { Booking, CustomerType } from './types';
+import { CUSTOMER_REQUIREMENTS, TIME_SLOTS } from './constants';
+
+export function generateDailyBookings(day: number, reputation: number): Booking[] {
+  const bookingCount = Math.min(3 + Math.floor(reputation / 20), 8);
+  const bookings: Booking[] = [];
+  
+  for (let i = 0; i < bookingCount; i++) {
+    const customerTypes: CustomerType[] = ['birthday', 'friends', 'company', 'couple', 'gaming'];
+    const type = customerTypes[Math.floor(Math.random() * customerTypes.length)];
+    
+    bookings.push({
+      id: `booking-${day}-${i}`,
+      customerName: `客戶 ${i + 1}`,
+      customerType: type,
+      peopleCount: Math.floor(Math.random() * 15) + 2,
+      requirements: CUSTOMER_REQUIREMENTS[type],
+      roomId: null,
+      timeSlot: TIME_SLOTS[Math.floor(Math.random() * TIME_SLOTS.length)],
+      date: `Day ${day}`,
+      satisfaction: 0,
+      revenue: 0,
+      status: 'pending',
+    });
+  }
+  
+  return bookings;
+}
