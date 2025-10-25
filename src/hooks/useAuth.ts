@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
-import { User, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut } from 'firebase/auth';
+import { User, signInWithPopup, GoogleAuthProvider, signOut } from 'firebase/auth';
 import { auth } from '@/lib/firebase';
+
+const provider = new GoogleAuthProvider();
 
 export function useAuth() {
   const [user, setUser] = useState<User | null>(null);
@@ -14,12 +16,12 @@ export function useAuth() {
     return unsubscribe;
   }, []);
 
-  const login = async (email: string, password: string) => {
-    return signInWithEmailAndPassword(auth, email, password);
+  const login = async () => {
+    return signInWithPopup(auth, provider);
   };
 
-  const register = async (email: string, password: string) => {
-    return createUserWithEmailAndPassword(auth, email, password);
+  const register = async () => {
+    return signInWithPopup(auth, provider);
   };
 
   const logout = async () => {
