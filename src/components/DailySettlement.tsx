@@ -65,31 +65,38 @@ export default function DailySettlement() {
       // 1. 執行所有安排的工作
       const todaySchedule = schedule.slots || [];
       
+      // 按物品分組，只執行每個物品的最後一個安裝時間段
+      const installItems = new Map();
+      
       for (const slot of todaySchedule) {
         if (slot.activity === 'install_item' && slot.roomId && slot.itemId) {
-          // 執行物品安裝
-          const item = inventory.find(i => i.id === slot.itemId);
-          const room = rooms.find(r => r.id === slot.roomId);
-          
-          if (item && room && room.items.length < room.maxItems) {
-            // 創建已安裝的物品
-            const installedItem = {
-              ...item,
-              id: `${item.id}-installed-${Date.now()}`,
-              roomId: slot.roomId,
-              status: 'installed' as const,
-            };
-            
-            // 添加到房間
-            addItem(installedItem);
-            assignItemToRoom(installedItem.id, slot.roomId);
-            
-            // 從庫存移除
-            removeFromInventory(item.id);
-          }
+          installItems.set(slot.itemId, slot);
         } else if (slot.activity === 'cleaning' && slot.roomId) {
           // 執行清潔
           updateRoomCleanliness(slot.roomId, 100);
+        }
+      }
+      
+      // 執行所有物品的安裝（只執行一次）
+      for (const [itemId, slot] of installItems) {
+        const item = inventory.find(i => i.id === itemId);
+        const room = rooms.find(r => r.id === slot.roomId);
+        
+        if (item && room && room.items.length < room.maxItems) {
+          // 創建已安裝的物品
+          const installedItem = {
+            ...item,
+            id: `${item.id}-installed-${Date.now()}`,
+            roomId: slot.roomId,
+            status: 'installed' as const,
+          };
+          
+          // 添加到房間
+          addItem(installedItem);
+          assignItemToRoom(installedItem.id, slot.roomId);
+          
+          // 從庫存移除
+          removeFromInventory(item.id);
         }
       }
       

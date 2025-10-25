@@ -10,11 +10,14 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { Home, Plus, Users, Package } from 'lucide-react';
+import { getItemTypeIcon, getItemTypeLabel } from '@/lib/utils';
 
 export default function RoomManagement() {
-  const { rooms, money, addRoom, spendMoney } = useGameStore();
+  const { rooms, money, addRoom, spendMoney, items } = useGameStore();
   const [selectedSize, setSelectedSize] = useState<string>('');
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [selectedRoom, setSelectedRoom] = useState<any>(null);
+  const [isDetailsOpen, setIsDetailsOpen] = useState(false);
 
   const roomSizes = [
     { value: 'small', label: '小房間', ...ROOM_CONFIG.small },
@@ -52,11 +55,20 @@ export default function RoomManagement() {
   const getRoomSizeLabel = (size: string) => {
     const sizeMap: { [key: string]: string } = {
       small: '小房間',
-      medium: '中房間', 
+      medium: '中房間',
       large: '大房間',
       xlarge: '超大房間',
     };
     return sizeMap[size] || size;
+  };
+
+  const handleViewDetails = (room: any) => {
+    setSelectedRoom(room);
+    setIsDetailsOpen(true);
+  };
+
+  const getRoomItems = (roomId: string) => {
+    return items.filter(item => item.roomId === roomId);
   };
 
   return (
@@ -172,7 +184,11 @@ export default function RoomManagement() {
                     <span className="text-sm font-medium">每日租金</span>
                     <span className="text-sm text-red-600">${room.rent}</span>
                   </div>
-                  <Button variant="outline" className="w-full">
+                  <Button 
+                    variant="outline" 
+                    className="w-full"
+                    onClick={() => handleViewDetails(room)}
+                  >
                     查看詳情
                   </Button>
                 </div>
@@ -181,6 +197,69 @@ export default function RoomManagement() {
           ))}
         </div>
       )}
+
+      {/* 房間詳情對話框 */}
+      <Dialog open={isDetailsOpen} onOpenChange={setIsDetailsOpen}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>{selectedRoom?.name} 詳情</DialogTitle>
+            <DialogDescription>
+              查看房間的詳細信息和已安裝的物品
+            </DialogDescription>
+          </DialogHeader>
+          {selectedRoom && (
+            <div className="space-y-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <h4 className="font-medium text-gray-900">基本信息</h4>
+                  <div className="space-y-2 text-sm text-gray-600">
+                    <div>房間大小: {getRoomSizeLabel(selectedRoom.size)}</div>
+                    <div>容量: {selectedRoom.capacity} 人</div>
+                    <div>物品容量: {selectedRoom.items.length}/{selectedRoom.maxItems}</div>
+                    <div>清潔度: {selectedRoom.cleanliness}%</div>
+                    <div>每日租金: ${selectedRoom.rent}</div>
+                  </div>
+                </div>
+                <div>
+                  <h4 className="font-medium text-gray-900">房間狀態</h4>
+                  <div className="space-y-2 text-sm text-gray-600">
+                    <div>已安裝物品: {selectedRoom.items.length} 個</div>
+                    <div>剩餘容量: {selectedRoom.maxItems - selectedRoom.items.length} 個</div>
+                    <div>清潔狀態: {selectedRoom.cleanliness >= 80 ? '良好' : selectedRoom.cleanliness >= 50 ? '一般' : '需要清潔'}</div>
+                  </div>
+                </div>
+              </div>
+              
+              <Separator />
+              
+              <div>
+                <h4 className="font-medium text-gray-900 mb-3">已安裝的物品</h4>
+                {getRoomItems(selectedRoom.id).length > 0 ? (
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    {getRoomItems(selectedRoom.id).map((item) => (
+                      <div key={item.id} className="flex items-center space-x-3 p-3 border rounded-lg">
+                        <span className="text-xl">{getItemTypeIcon(item.type)}</span>
+                        <div className="flex-1">
+                          <div className="font-medium">{item.name}</div>
+                          <div className="text-sm text-gray-600">{getItemTypeLabel(item.type)}</div>
+                        </div>
+                        <div className="text-sm text-gray-500">
+                          吸引力: {item.attraction}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="text-center py-8 text-gray-500">
+                    <Package className="h-12 w-12 mx-auto mb-2 text-gray-400" />
+                    <p>房間中還沒有安裝任何物品</p>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

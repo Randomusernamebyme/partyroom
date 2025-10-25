@@ -45,14 +45,49 @@ export default function Inventory() {
       return;
     }
 
-    // 添加到時間表
-    addToSchedule({
-      time: selectedTime,
-      activity: 'install_item',
-      roomId: selectedRoom,
-      itemId: selectedItem.id,
-      description: `安裝 ${selectedItem.name} 到 ${room.name}`,
-    });
+    // 計算需要占用的時間段數量
+    const installTime = selectedItem.installTime;
+    const timeSlots = TIME_SLOTS;
+    const startIndex = timeSlots.indexOf(selectedTime);
+    
+    if (startIndex === -1) {
+      alert('無效的時間段！');
+      return;
+    }
+
+    // 檢查是否有足夠的連續時間段
+    const requiredSlots = Math.ceil(installTime);
+    const endIndex = startIndex + requiredSlots;
+    
+    if (endIndex > timeSlots.length) {
+      alert('沒有足夠的連續時間段進行安裝！');
+      return;
+    }
+
+    // 檢查所有需要的時間段是否都空閒
+    for (let i = startIndex; i < endIndex; i++) {
+      const timeSlot = timeSlots[i];
+      const isOccupied = schedule.slots?.some(slot => 
+        slot.time === timeSlot && slot.roomId === selectedRoom
+      );
+      
+      if (isOccupied) {
+        alert(`時間段 ${timeSlot} 已被占用！`);
+        return;
+      }
+    }
+
+    // 為每個需要的時間段添加安排
+    for (let i = startIndex; i < endIndex; i++) {
+      const timeSlot = timeSlots[i];
+      addToSchedule({
+        time: timeSlot,
+        activity: 'install_item',
+        roomId: selectedRoom,
+        itemId: selectedItem.id,
+        description: `安裝 ${selectedItem.name} 到 ${room.name} (${i - startIndex + 1}/${requiredSlots})`,
+      });
+    }
 
     setIsDialogOpen(false);
     setSelectedItem(null);

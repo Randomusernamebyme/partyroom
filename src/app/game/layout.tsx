@@ -16,14 +16,22 @@ export default function GameLayout({
   children: React.ReactNode;
 }) {
   const getCurrentTimeSlot = () => {
-    const now = new Date();
-    const hour = now.getHours();
+    // 遊戲時間從 09:00 開始，每小時一個時間段
     const timeSlots = ['09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00', '23:00', '00:00'];
-    const currentSlot = timeSlots.find(slot => {
-      const slotHour = parseInt(slot.split(':')[0]);
-      return slotHour === hour;
-    });
-    return currentSlot || '09:00';
+    
+    // 根據當前天數和已安排的時間段來確定當前時間
+    const todaySchedule = schedule.slots || [];
+    const occupiedSlots = todaySchedule.map(slot => slot.time).sort();
+    
+    // 找到第一個空閒的時間段，如果沒有則返回下一個時間段
+    for (let i = 0; i < timeSlots.length; i++) {
+      if (!occupiedSlots.includes(timeSlots[i])) {
+        return timeSlots[i];
+      }
+    }
+    
+    // 如果所有時間段都被占用，返回最後一個時間段
+    return timeSlots[timeSlots.length - 1];
   };
 
   const getCurrentActivity = () => {
@@ -117,39 +125,6 @@ export default function GameLayout({
               </CardContent>
             </Card>
           </div>
-          
-          <Separator />
-          
-          {/* 導航 */}
-          <Tabs defaultValue="rooms" className="w-full">
-            <TabsList className="grid w-full grid-cols-2">
-              <TabsTrigger value="rooms">房間</TabsTrigger>
-              <TabsTrigger value="shop">商店</TabsTrigger>
-            </TabsList>
-            <TabsContent value="rooms" className="mt-4">
-              <div className="space-y-2">
-                <Button variant="outline" className="w-full justify-start">
-                  房間管理
-                </Button>
-                <Button variant="outline" className="w-full justify-start">
-                  我的物品
-                </Button>
-                <Button variant="outline" className="w-full justify-start">
-                  預約處理
-                </Button>
-              </div>
-            </TabsContent>
-            <TabsContent value="shop" className="mt-4">
-              <div className="space-y-2">
-                <Button variant="outline" className="w-full justify-start">
-                  物品商店
-                </Button>
-                <Button variant="outline" className="w-full justify-start">
-                  租用房間
-                </Button>
-              </div>
-            </TabsContent>
-          </Tabs>
           
           <Separator />
           

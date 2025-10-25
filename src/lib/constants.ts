@@ -16,11 +16,26 @@ export const INITIAL_ITEMS = [
 ];
 
 export const CUSTOMER_REQUIREMENTS = {
-  birthday: ['ktv', 'decoration', 'photo'],
-  friends: ['game', 'boardgame', 'sound'],
-  company: ['boardgame', 'ktv', 'large-space'],
-  couple: ['decoration', 'ktv', 'small-space'],
-  gaming: ['game-console', 'comfortable-seats'],
+  birthday: {
+    required: ['ktv', 'decoration'],
+    wanted: ['photo', 'sound', 'lighting']
+  },
+  friends: {
+    required: ['game'],
+    wanted: ['boardgame', 'sound', 'comfortable-seats']
+  },
+  company: {
+    required: ['large-space'],
+    wanted: ['boardgame', 'ktv', 'meeting-setup']
+  },
+  couple: {
+    required: ['small-space'],
+    wanted: ['decoration', 'ktv', 'romantic-lighting']
+  },
+  gaming: {
+    required: ['game-console'],
+    wanted: ['comfortable-seats', 'gaming-setup', 'snacks']
+  },
 };
 
 export const TIME_SLOTS = [

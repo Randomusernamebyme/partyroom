@@ -9,12 +9,15 @@ export function generateDailyBookings(day: number, reputation: number, totalAttr
     const customerTypes: CustomerType[] = ['birthday', 'friends', 'company', 'couple', 'gaming'];
     const type = customerTypes[Math.floor(Math.random() * customerTypes.length)];
     
+    const requirements = CUSTOMER_REQUIREMENTS[type];
     bookings.push({
       id: `booking-${day}-${i}`,
       customerName: `客戶 ${i + 1}`,
       customerType: type,
       peopleCount: Math.floor(Math.random() * 15) + 2,
-      requirements: CUSTOMER_REQUIREMENTS[type],
+      requirements: [...requirements.required, ...requirements.wanted],
+      requiredItems: requirements.required,
+      wantedItems: requirements.wanted,
       roomId: null,
       timeSlot: TIME_SLOTS[Math.floor(Math.random() * TIME_SLOTS.length)],
       date: `Day ${day}`,

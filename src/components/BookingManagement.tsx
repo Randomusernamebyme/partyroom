@@ -169,14 +169,26 @@ export default function BookingManagement() {
                       <Clock className="h-4 w-4 mr-2" />
                       <span>{booking.timeSlot}</span>
                     </div>
-                    <div className="space-y-1">
-                      <p className="text-sm font-medium text-gray-700">需求：</p>
-                      <div className="flex flex-wrap gap-1">
-                        {booking.requirements.map((req, index) => (
-                          <Badge key={index} variant="secondary" className="text-xs">
-                            {getRequirementLabel(req)}
-                          </Badge>
-                        ))}
+                    <div className="space-y-2">
+                      <div>
+                        <p className="text-sm font-medium text-gray-700">必須需求：</p>
+                        <div className="flex flex-wrap gap-1 mt-1">
+                          {booking.requiredItems?.map((req, index) => (
+                            <Badge key={index} variant="destructive" className="text-xs">
+                              {getRequirementLabel(req)}
+                            </Badge>
+                          ))}
+                        </div>
+                      </div>
+                      <div>
+                        <p className="text-sm font-medium text-gray-700">加分項目：</p>
+                        <div className="flex flex-wrap gap-1 mt-1">
+                          {booking.wantedItems?.map((req, index) => (
+                            <Badge key={index} variant="secondary" className="text-xs">
+                              {getRequirementLabel(req)}
+                            </Badge>
+                          ))}
+                        </div>
                       </div>
                     </div>
                     <Separator />

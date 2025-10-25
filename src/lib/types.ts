@@ -33,6 +33,8 @@ export interface Booking {
   customerType: CustomerType;
   peopleCount: number;
   requirements: string[];
+  requiredItems: string[];
+  wantedItems: string[];
   roomId: string | null;
   timeSlot: string;
   date: string;
